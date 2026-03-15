@@ -16,19 +16,34 @@ class AboutUsScreen extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Container(
-                  width: 150,
-                  height: 150,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.grey[300],
-                  ),
-                  child: Center(
-                    child: Text(
-                      'AstroView',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                    ),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Image.asset(
+                    'assets/images/logo.png',
+                    width: 150,
+                    height: 150,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        width: 150,
+                        height: 150,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.grey[300],
+                        ),
+                        child: Center(
+                          child: Text(
+                            'AstroView',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.blue,
+                            ),
+                          ),
+                        ),
+                      );
+                    },
                   ),
                 ),
                 SizedBox(height: 32),
@@ -40,13 +55,13 @@ class AboutUsScreen extends StatelessWidget {
                 ),
                 SizedBox(height: 16),
                 Text(
-                  'Explore NASA\'s Astronomy Pictures of the Day',
+                  'Explore NASA\'s Astronomy Pictures',
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
                 SizedBox(height: 24),
                 Text(
-                  'AstroView is a cross-platform Flutter application that brings you the most fascinating astronomy images from NASA. Discover stunning images of our universe, learn about astronomical phenomena, and save your favorite discoveries.',
+                  'AstroView brings you amazing astronomy images from NASA. Discover stunning space photos and save your favorites.',
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
@@ -66,7 +81,7 @@ class AboutUsScreen extends StatelessWidget {
                     }
                   },
                   child: Text(
-                    'NASA API Information',
+                    'NASA API',
                     style: TextStyle(
                       color: Colors.blue,
                       decoration: TextDecoration.underline,
@@ -80,7 +95,7 @@ class AboutUsScreen extends StatelessWidget {
                 ),
                 SizedBox(height: 16),
                 Text(
-                  '© 2026 AstroView. All rights reserved.',
+                  '© 2026 AstroView',
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: Colors.grey,
