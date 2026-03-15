@@ -9,6 +9,7 @@ import 'screens/loading_screen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
+  // Initialize settings service first
   final settingsService = SettingsService();
   await settingsService.init();
   
@@ -24,7 +25,10 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => ApodProvider()),
         ChangeNotifierProvider(create: (_) => FavoritesProvider()),
-        ChangeNotifierProvider(create: (_) => SettingsProvider()),
+        ChangeNotifierProxyProvider<SettingsProvider, SettingsProvider>(
+          create: (_) => SettingsProvider(),
+          update: (_, provider, __) => provider,
+        ),
       ],
       builder: (context, _) {
         return Consumer<SettingsProvider>(
