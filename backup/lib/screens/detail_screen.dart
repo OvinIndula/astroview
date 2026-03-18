@@ -7,7 +7,7 @@ import '../providers/favorites_provider.dart';
 class DetailScreen extends StatelessWidget {
   final ApodImage image;
 
-  const DetailScreen({Key? key, required this.image}) : super(key: key);
+  const DetailScreen({super.key, required this.image});
 
   @override
   Widget build(BuildContext context) {

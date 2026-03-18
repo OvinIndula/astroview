@@ -5,6 +5,8 @@ import '../providers/settings_provider.dart';
 import 'about_us_screen.dart';
 
 class SettingsScreen extends StatelessWidget {
+  const SettingsScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(

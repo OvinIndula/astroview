@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AboutUsScreen extends StatelessWidget {
+  const AboutUsScreen({super.key});
+
   Future<void> _launchUrl(String url) async {
     try {
       if (await canLaunchUrl(Uri.parse(url))) {

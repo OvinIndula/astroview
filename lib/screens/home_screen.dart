@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
-import '../models/settings_model.dart'; // ADD THIS LINE
+import '../models/settings_model.dart';
 import '../providers/apod_provider.dart';
 import '../providers/favorites_provider.dart';
 import '../providers/settings_provider.dart';

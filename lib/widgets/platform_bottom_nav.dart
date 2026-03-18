@@ -6,10 +6,10 @@ class PlatformBottomNav extends StatelessWidget {
   final Function(int) onTap;
 
   const PlatformBottomNav({
-    Key? key,
+    super.key,
     required this.currentIndex,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -32,10 +32,10 @@ class CupertinoBottomNav extends StatelessWidget {
   final Function(int) onTap;
 
   const CupertinoBottomNav({
-    Key? key,
+    super.key,
     required this.currentIndex,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -87,10 +87,10 @@ class MaterialBottomNav extends StatelessWidget {
   final Function(int) onTap;
 
   const MaterialBottomNav({
-    Key? key,
+    super.key,
     required this.currentIndex,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

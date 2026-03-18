@@ -9,7 +9,7 @@ import 'detail_screen.dart';
 class SearchResultsScreen extends StatefulWidget {
   final String query;
 
-  const SearchResultsScreen({Key? key, required this.query}) : super(key: key);
+  const SearchResultsScreen({super.key, required this.query});
 
   @override
   State<SearchResultsScreen> createState() => _SearchResultsScreenState();

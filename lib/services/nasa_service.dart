@@ -76,11 +76,15 @@ class NasaService {
 
   static Future<List<ApodImage>> getRecentPhotos({int days = 60}) async {
     try {
-      final endDate = DateTime.now();
-      final startDate = endDate.subtract(Duration(days: days));
+      final now = DateTime.now();
+      
+      // ✅ KEY FIX: Subtract 1 day to account for today being included
+      final endDate = now.subtract(Duration(days: 1));
+      final endDateOnly = DateTime(endDate.year, endDate.month, endDate.day);
+      final startDate = endDateOnly.subtract(Duration(days: days));
       
       final start = startDate.toString().split(' ')[0];
-      final end = endDate.toString().split(' ')[0];
+      final end = endDateOnly.toString().split(' ')[0];
       
       print('📡 Getting recent photos for last $days days');
       print('📡 Date range: $start to $end');

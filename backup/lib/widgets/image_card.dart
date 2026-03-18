@@ -8,12 +8,12 @@ class ImageCard extends StatelessWidget {
   final double fontSize;
 
   const ImageCard({
-    Key? key,
+    super.key,
     required this.image,
     required this.onTap,
     this.isGridView = false,
     this.fontSize = 14.0,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

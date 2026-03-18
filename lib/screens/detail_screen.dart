@@ -76,7 +76,7 @@ class DetailScreen extends StatelessWidget {
                   Row(
                     children: [
                       Expanded(
-                        child: _buildFavoriteButton(image),
+                        child: _buildFavoriteButton(image, context),
                       ),
                       SizedBox(width: 8),
                       Expanded(
@@ -109,7 +109,8 @@ class DetailScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildFavoriteButton(ApodImage apod) {
+  // ✅ IMPROVED: Updated to add delete confirmation
+  Widget _buildFavoriteButton(ApodImage apod, BuildContext context) {
     return Consumer<FavoritesProvider>(
       builder: (context, favoritesProvider, _) {
         return FutureBuilder<bool>(
@@ -121,14 +122,59 @@ class DetailScreen extends StatelessWidget {
               label: Text(isFavorite ? 'Favorited' : 'Favorite'),
               onPressed: () {
                 if (isFavorite) {
-                  favoritesProvider.removeFavorite(apod.date);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Removed from favorites')),
+                  // ✅ IMPROVED: Show confirmation dialog before deleting
+                  showDialog(
+                    context: context,
+                    builder: (dialogContext) => AlertDialog(
+                      title: Text('Remove Favorite?'),
+                      content: Text(
+                        'This image will be removed from your saved favorites.',
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(dialogContext),
+                          child: Text('CANCEL'),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(dialogContext);
+                            favoritesProvider.removeFavorite(apod.date);
+                            
+                            // ✅ NEW: Show undo option
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Removed from favorites'),
+                                action: SnackBarAction(
+                                  label: 'UNDO',
+                                  onPressed: () {
+                                    favoritesProvider.addFavorite(apod);
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text('Added back to favorites'),
+                                        duration: Duration(seconds: 2),
+                                      ),
+                                    );
+                                  },
+                                ),
+                                duration: Duration(seconds: 5),
+                              ),
+                            );
+                          },
+                          child: Text(
+                            'DELETE',
+                            style: TextStyle(color: Colors.red),
+                          ),
+                        ),
+                      ],
+                    ),
                   );
                 } else {
                   favoritesProvider.addFavorite(apod);
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Added to favorites')),
+                    SnackBar(
+                      content: Text('Added to favorites'),
+                      duration: Duration(seconds: 2),
+                    ),
                   );
                 }
               },
