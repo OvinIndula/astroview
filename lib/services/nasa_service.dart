@@ -10,20 +10,21 @@ class NasaService {
     try {
       final url = '$baseUrl?api_key=$apiKey';
       print('📡 Fetching today APOD from: $url');
-      
+
       final response = await http.get(Uri.parse(url)).timeout(
         Duration(seconds: 10),
         onTimeout: () => throw Exception('Request timeout'),
       );
 
       print('📡 Response status: ${response.statusCode}');
-      
+
       if (response.statusCode == 200) {
         final apod = ApodImage.fromJson(jsonDecode(response.body));
         print('✅ Today APOD fetched: ${apod.title}');
         return apod;
       } else {
-        throw Exception('Failed: ${response.statusCode}');
+        // ✅ HEURISTIC #9: Error Messaging
+        throw Exception('Failed: HTTP ${response.statusCode}');
       }
     } catch (e) {
       print('❌ Error fetching today APOD: $e');
@@ -35,19 +36,18 @@ class NasaService {
     try {
       final url = '$baseUrl?api_key=$apiKey&start_date=$startDate&end_date=$endDate';
       print('📡 Fetching range from $startDate to $endDate');
-      print('📡 URL: $url');
-      
+
       final response = await http.get(Uri.parse(url)).timeout(
         Duration(seconds: 30),
         onTimeout: () => throw Exception('Request timeout'),
       );
 
       print('📡 Response status: ${response.statusCode}');
-      
+
       if (response.statusCode == 200) {
         List<dynamic> data = jsonDecode(response.body);
         print('✅ API returned ${data.length} photos');
-        
+
         final photos = data
             .map((item) {
               try {
@@ -61,12 +61,12 @@ class NasaService {
             .toList()
             .reversed
             .toList();
-        
+
         print('✅ Processed ${photos.length} photos');
         return photos;
       } else {
-        print('❌ API error: ${response.statusCode} - ${response.body}');
-        throw Exception('Failed to load APOD range: ${response.statusCode}');
+        print('❌ API error: ${response.statusCode}');
+        throw Exception('Failed to load photos: ${response.statusCode}');
       }
     } catch (e) {
       print('❌ Error fetching APOD range: $e');
@@ -77,18 +77,16 @@ class NasaService {
   static Future<List<ApodImage>> getRecentPhotos({int days = 60}) async {
     try {
       final now = DateTime.now();
-      
-      // ✅ KEY FIX: Subtract 1 day to account for today being included
       final endDate = now.subtract(Duration(days: 1));
       final endDateOnly = DateTime(endDate.year, endDate.month, endDate.day);
       final startDate = endDateOnly.subtract(Duration(days: days));
-      
+
       final start = startDate.toString().split(' ')[0];
       final end = endDateOnly.toString().split(' ')[0];
-      
+
       print('📡 Getting recent photos for last $days days');
       print('📡 Date range: $start to $end');
-      
+
       final photos = await getApodRange(start, end);
       print('✅ Got ${photos.length} recent photos');
       return photos;

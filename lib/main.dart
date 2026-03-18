@@ -8,10 +8,10 @@ import 'screens/loading_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   final settingsService = SettingsService();
   await settingsService.init();
-  
+
   runApp(const MyApp());
 }
 
@@ -44,10 +44,11 @@ class MyApp extends StatelessWidget {
                   brightness: Brightness.dark,
                 ),
               ),
-              themeMode: settingsProvider.settings.darkMode 
-                  ? ThemeMode.dark 
+              themeMode: settingsProvider.settings.darkMode
+                  ? ThemeMode.dark
                   : ThemeMode.light,
               home: LoadingScreen(),
+              debugShowCheckedModeBanner: false, // ✅ NEW: Remove debug banner
             );
           },
         );

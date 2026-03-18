@@ -27,11 +27,33 @@ class DetailScreen extends StatelessWidget {
                 height: 300,
                 width: double.infinity,
                 fit: BoxFit.cover,
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return Container(
+                    height: 300,
+                    color: Colors.grey[200],
+                    child: Center(
+                      child: CircularProgressIndicator(
+                        value: loadingProgress.expectedTotalBytes != null
+                            ? loadingProgress.cumulativeBytesLoaded /
+                                loadingProgress.expectedTotalBytes!
+                            : null,
+                      ),
+                    ),
+                  );
+                },
                 errorBuilder: (context, error, stackTrace) {
                   return Container(
                     height: 300,
                     color: Colors.grey[300],
-                    child: Icon(Icons.image_not_supported),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.image_not_supported, size: 48),
+                        SizedBox(height: 8),
+                        Text('Failed to load image'),
+                      ],
+                    ),
                   );
                 },
               ),
@@ -109,7 +131,7 @@ class DetailScreen extends StatelessWidget {
     );
   }
 
-  // ✅ IMPROVED: Updated to add delete confirmation
+  // ✅ HEURISTIC #3: User Control - Confirmation + Undo
   Widget _buildFavoriteButton(ApodImage apod, BuildContext context) {
     return Consumer<FavoritesProvider>(
       builder: (context, favoritesProvider, _) {
@@ -122,7 +144,7 @@ class DetailScreen extends StatelessWidget {
               label: Text(isFavorite ? 'Favorited' : 'Favorite'),
               onPressed: () {
                 if (isFavorite) {
-                  // ✅ IMPROVED: Show confirmation dialog before deleting
+                  // ✅ HEURISTIC #5: Error Prevention - Confirmation dialog
                   showDialog(
                     context: context,
                     builder: (dialogContext) => AlertDialog(
@@ -139,8 +161,8 @@ class DetailScreen extends StatelessWidget {
                           onPressed: () {
                             Navigator.pop(dialogContext);
                             favoritesProvider.removeFavorite(apod.date);
-                            
-                            // ✅ NEW: Show undo option
+
+                            // ✅ HEURISTIC #3: User Control - Undo option
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text('Removed from favorites'),
@@ -148,9 +170,11 @@ class DetailScreen extends StatelessWidget {
                                   label: 'UNDO',
                                   onPressed: () {
                                     favoritesProvider.addFavorite(apod);
-                                    ScaffoldMessenger.of(context).showSnackBar(
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(
                                       SnackBar(
-                                        content: Text('Added back to favorites'),
+                                        content:
+                                            Text('Added back to favorites'),
                                         duration: Duration(seconds: 2),
                                       ),
                                     );

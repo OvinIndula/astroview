@@ -24,6 +24,7 @@ class SettingsScreen extends StatelessWidget {
                 _buildSectionTitle(context, 'Appearance'),
                 SwitchListTile(
                   title: Text('Dark Mode'),
+                  subtitle: Text('Toggle between light and dark themes'),
                   value: settingsProvider.settings.darkMode,
                   onChanged: (value) {
                     settingsProvider.setDarkMode(value);
@@ -50,6 +51,7 @@ class SettingsScreen extends StatelessWidget {
                 _buildSectionTitle(context, 'Notifications'),
                 SwitchListTile(
                   title: Text('App Notifications'),
+                  subtitle: Text('Receive alerts for new images'),
                   value: settingsProvider.settings.notificationsEnabled,
                   onChanged: (value) {
                     settingsProvider.setNotifications(value);
@@ -58,7 +60,7 @@ class SettingsScreen extends StatelessWidget {
                 Divider(),
                 _buildSectionTitle(context, 'View Preferences'),
                 ListTile(
-                  title: Text('List View'),
+                  title: Text('Default View'),
                   subtitle: Text(_viewPreferenceName(settingsProvider.settings.viewPreference)),
                   trailing: DropdownButton<ViewPreference>(
                     value: settingsProvider.settings.viewPreference,
@@ -75,18 +77,54 @@ class SettingsScreen extends StatelessWidget {
                 ),
                 Divider(),
                 SizedBox(height: 16),
+                // ✅ HEURISTIC #8: Help & Documentation
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => AboutUsScreen()),
-                      );
-                    },
-                    child: Text('About Us'),
+                  child: Column(
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (_) => AboutUsScreen()),
+                          );
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.info_outline),
+                            SizedBox(width: 8),
+                            Text('About Us'),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 12),
+                      ElevatedButton(
+                        onPressed: () => _showHelpDialog(context),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.help_outline),
+                            SizedBox(width: 8),
+                            Text('Help & FAQ'),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ),
+                SizedBox(height: 24),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: Text(
+                    'Version ${_getAppVersion()}',
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Colors.grey,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 16),
               ],
             );
           },
@@ -125,5 +163,70 @@ class SettingsScreen extends StatelessWidget {
       case ViewPreference.grid:
         return 'Grid';
     }
+  }
+
+  String _getAppVersion() {
+    return '1.0.2';
+  }
+
+  // ✅ HEURISTIC #8: Help & Documentation
+  void _showHelpDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('📚 Help & FAQ'),
+        content: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _buildFAQItem(
+                'What is APOD?',
+                'Astronomy Picture of the Day is a NASA service that features a different image from space each day.',
+              ),
+              _buildFAQItem(
+                'How do I save favorites?',
+                'Tap the ❤️ icon on any image to add it to your favorites.',
+              ),
+              _buildFAQItem(
+                'Why aren\'t all photos loading?',
+                'Photos are loaded in batches for faster performance. Tap "Load More" to see additional images.',
+              ),
+              _buildFAQItem(
+                'Can I use this offline?',
+                'Favorites are cached locally, but new photos require an internet connection.',
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Close'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFAQItem(String question, String answer) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            question,
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+          ),
+          SizedBox(height: 4),
+          Text(
+            answer,
+            style: TextStyle(fontSize: 13, color: Colors.grey[600]),
+          ),
+          SizedBox(height: 8),
+        ],
+      ),
+    );
   }
 }
